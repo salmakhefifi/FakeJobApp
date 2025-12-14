@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake Job Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f8;
+            color: #333;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .real { background-color: #dff0d8; color: #3c763d; }
+        .fake { background-color: #f2dede; color: #a94442; }
+    </style>
+    <script>
+        function clearResult() {
+            const resultDiv = document.getElementById('prediction-result');
+            resultDiv.innerHTML = '';
+            resultDiv.className = '';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Fake Job Detection</h1>
+        <form action="/predict" method="post" onsubmit="clearResult()">
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company" placeholder="Enter company name" required>
+
+            <label for="position">Position:</label>
+            <input type="text" id="position" name="position" placeholder="Enter job position" required>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" placeholder="Enter job location" required>
+
+            <label for="requirements">Requirements:</label>
+            <textarea id="requirements" name="requirements" placeholder="Enter requirements" required></textarea>
+
+            <label for="benefits">Benefits:</label>
+            <textarea id="benefits" name="benefits" placeholder="Enter benefits" required></textarea>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <div id="prediction-result" class="result {% if prediction=='Fake Job ❌' %}fake{% else %}real{% endif %}">
+                {{ prediction }}
+            </div>
+        {% else %}
+            <div id="prediction-result" class="result"></div>
+        {% endif %}
+    </div>
+</body>
+</html>
