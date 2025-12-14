@@ -7,7 +7,7 @@ app = Flask(__name__)
 tfidf = joblib.load("tfidf.pkl")
 model = joblib.load("model.pkl")
 
-# Route principale pour afficher le formulaire
+# Route pour afficher le formulaire
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -15,32 +15,20 @@ def home():
 # Route pour prédiction
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        # Récupérer chaque champ du formulaire
-        company = request.form["company"]
-        position = request.form["position"]
-        location = request.form["location"]
-        requirements = request.form["requirements"]
-        benefits = request.form["benefits"]
+    company = request.form["company"]
+    position = request.form["position"]
+    location = request.form["location"]
+    requirements = request.form["requirements"]
+    benefits = request.form["benefits"]
 
-        # Concaténer tous les champs en une seule chaîne
-        text = f"{company} {position} {location} {requirements} {benefits}"
+    text = f"{company} {position} {location} {requirements} {benefits}"
 
-        # Transformer et prédire
-        X = tfidf.transform([text])
-        prediction = model.predict(X)[0]
+    X = tfidf.transform([text])
+    prediction = model.predict(X)[0]
 
-        # Convertir la prédiction en texte
-        if prediction == 1:
-            result = "Fake Job ❌"
-        else:
-            result = "Real Job ✅"
+    result = "Fake Job ❌" if prediction == 1 else "Real Job ✅"
 
-        return render_template("index.html", prediction=result)
+    return render_template("index.html", prediction=result)
 
-    except Exception as e:
-        return render_template("index.html", prediction=f"Error: {str(e)}")
-
-# Lancer le serveur Flask
 if __name__ == "__main__":
     app.run(debug=True)
